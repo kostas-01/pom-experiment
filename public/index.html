@@ -1,24 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Custom Chatbot</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assistant</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1e1e2f;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #ffffff;
+    }
+    .container {
+      width: 95%;
+      max-width: 95%;
+      height: 95%;
+      background: #2c2c3e;
+      border-radius: 15px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .info-box {
+      background: #4a4a6a;
+      color: #ffffff;
+      padding: 15px;
+      text-align: center;
+      font-size: 16px;
+      border-bottom: 2px solid #3a3a5a;
+    }
+
+    #chatBox {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #1e1e2f;
+      color: #d1d1e0;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    #chatBox p {
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    #chatBox p strong {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    #chatBox p:nth-child(odd) {
+      background: #3a3a5a;
+      align-self: flex-start;
+    }
+
+    #chatBox p:nth-child(even) {
+      background: #4a4a6a;
+      align-self: flex-end;
+    }
+
+    .chat-input {
+      display: flex;
+      border-top: 2px solid #3a3a5a;
+      padding: 15px;
+      background: #2c2c3e;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 15px;
+      border: 1px solid #3a3a5a;
+      border-radius: 8px;
+      font-size: 18px;
+      background: #1e1e2f;
+      color: #ffffff;
+    }
+
+    .chat-input input::placeholder {
+      color: #a1a1b3;
+    }
+
+    .chat-input textarea {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #3a3a5a;
+    border-radius: 8px;
+    font-size: 18px;
+    background: #1e1e2f;
+    color: #ffffff;
+    resize: none; /* Prevent resizing */
+    height: 100px; /* Set a default height */
+  }
+
+  .chat-input textarea::placeholder {
+    color: #a1a1b3;
+  }
+
+    .chat-input button {
+      margin-left: 10px;
+      padding: 15px 25px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background 0.3s ease;
+    }
+
+    .chat-input button:hover {
+      background: #3399ff ;
+    }
+
+
+    code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #1e1e2f;
+    color: #dcdcdc;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    white-space: pre-wrap;
+  }
+
+  /* Highlight specific syntax */
+  .ts-keyword {
+    color: #569cd6; /* Blue for keywords */
+    font-weight: bold;
+  }
+
+  .ts-string {
+    color: #ce9178; /* Orange for strings */
+  }
+
+  .ts-variable {
+    color: #9cdcfe; /* Light blue for variables */
+  }
+
+  .ts-comment {
+    color: #6a9955; /* Green for comments */
+    font-style: italic;
+  }
+
+
+  </style>
 </head>
 <body>
-  <h1>My Chatbot</h1>
-  <input id="userInput" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
-  <div id="chatBox"></div>
+  <div class="container">
+    <div class="info-box">
+      <h3>POM & Test File Extractor for Playwright Codegen Output</h3>
+      <p>Insert your playwright codegen code below and watch the magic happen</p>
+    </div>
+    <div id="chatBox"></div>
+    <div class="chat-input">
+      <textarea id="userInput" placeholder="Paste your code here and click send..."></textarea>
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 
   <script>
     async function sendMessage() {
       const input = document.getElementById('userInput').value;
+      if (!input.trim()) return; // Prevent sending empty messages
+
       const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: input })
       });
+
       const data = await response.json();
-      document.getElementById('chatBox').innerHTML += `<p><strong>You:</strong> ${input}</p><p><strong>Bot:</strong> ${data.reply}</p>`;
+      const chatBox = document.getElementById('chatBox');
+      chatBox.innerHTML += `<p><strong>You:</strong><br><pre><code>${escapeHtml(input)}</code></pre></p>`;
+      chatBox.innerHTML += `<p><strong>AI Assistant:</strong><br><pre><code>${escapeHtml(data.reply)}</code></pre></p>`;
+      chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
+      document.getElementById('userInput').value = ''; // Clear input field
+    }
+
+    function escapeHtml(text) {
+      const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, function(m) { return map[m]; });
     }
   </script>
 </body>
