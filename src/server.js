@@ -112,13 +112,14 @@ async function askAiToRectify(code) {
       *Rules*
       1. Just generage the code and no other suggestions
       2. follow best practices of playwright and POM
-      3. if you are uncertain of what the element should be named (if the selector isnt as explainatory) then add '--' at the end in order for me to identify it and fix it
+      3. if you are uncertain of what the element should be named (if the selector isnt as explainatory) then add 'RENAME' at the end in order for me to identify it and fix it
       4. follow typescript best practices for playwright
       5. Use smart ways to avoid duplication of tasks as filling the same field by using common functions
       6. for click functions use click+ the name of the field/element e.g. clickWeatherNav
       7. for assert functions use check+ the name of the field/element e.g. checkBbcHeader
       8. for fill functions use fill+ the name of the field/element e.g. fillSearchPlace
       9. for check functions where we check a box use clickCheckBox + the name of the field/element e.g. clickCheckBoxGenderMale \n
+      10. if assertions of expect exist in the given codegen code make sure you add it in your response import of the page file
       
       **MAKE SURE TO** 
       1. follow the above rules and do not skip any of them
